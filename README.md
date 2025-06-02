@@ -1,3 +1,2 @@
-# unikronswap-sol
-
+# unikronswap
 Detailed Documentation of the project update below...
