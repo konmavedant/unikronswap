@@ -1,0 +1,129 @@
+{
+    "version": "0.1.0",
+    "name": "unikron",
+    "instructions": [
+        {
+            "name": "commitSwap",
+            "accounts": [
+                {
+                    "name": "swap",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "user",
+                    "isMut": true,
+                    "isSigner": true
+                },
+                {
+                    "name": "systemProgram",
+                    "isMut": false,
+                    "isSigner": false
+                }
+            ],
+            "args": [
+                {
+                    "name": "intentHash",
+                    "type": {
+                        "array": [
+                            "u8",
+                            32
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "revealAndExecute",
+            "accounts": [
+                {
+                    "name": "swap",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "user",
+                    "isMut": true,
+                    "isSigner": true
+                },
+                {
+                    "name": "stakers",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "treasury",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "bounty",
+                    "isMut": true,
+                    "isSigner": false
+                }
+            ],
+            "args": [
+                {
+                    "name": "actualData",
+                    "type": "bytes"
+                },
+                {
+                    "name": "routeHash",
+                    "type": {
+                        "array": [
+                            "u8",
+                            32
+                        ]
+                    }
+                },
+                {
+                    "name": "amountIn",
+                    "type": "u64"
+                }
+            ]
+        }
+    ],
+    "accounts": [
+        {
+            "name": "SwapIntent",
+            "type": {
+                "kind": "struct",
+                "fields": [
+                    {
+                        "name": "user",
+                        "type": "publicKey"
+                    },
+                    {
+                        "name": "intentHash",
+                        "type": {
+                            "array": [
+                                "u8",
+                                32
+                            ]
+                        }
+                    },
+                    {
+                        "name": "timestamp",
+                        "type": "i64"
+                    },
+                    {
+                        "name": "revealed",
+                        "type": "bool"
+                    }
+                ]
+            }
+        }
+    ],
+    "errors": [
+        {
+            "code": 6000,
+            "name": "HashMismatch",
+            "msg": "Intent hash mismatch with revealed data"
+        },
+        {
+            "code": 6001,
+            "name": "AlreadyRevealed",
+            "msg": "Swap already revealed"
+        }
+    ]
+}
