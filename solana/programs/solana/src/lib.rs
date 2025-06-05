@@ -1,38 +1,40 @@
-// programs/solana/src/lib.rs
-
+// lib.rs
 use anchor_lang::prelude::*;
+declare_id!("7saCDPbxRTGEPeyTYZgXyzNVr5LXFPEnYKpVyAqT2QNd");
 
 pub mod instructions;
 pub mod state;
 pub mod constants;
 pub mod errors;
 
-declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkgmqz7uYb6qV");
-
 use instructions::*;
+use instructions::commit_trade::handle as handle_commit;
+use instructions::reveal_trade::handle as handle_reveal;
+use instructions::settle_trade::handle as handle_settle;
+use state::TradeIntentData;
 
 #[program]
 pub mod unikron {
     use super::*;
 
     pub fn commit_trade(
-        ctx: Context<commit_trade::CommitTrade>,
+        ctx: Context<CommitTrade>,
         intent_hash: [u8; 32],
         nonce: u64,
         expiry: u64,
     ) -> Result<()> {
-        commit_trade::handle(ctx, intent_hash, nonce, expiry)
+        handle_commit(ctx, intent_hash, nonce, expiry)
     }
 
     pub fn reveal_trade(
-        ctx: Context<reveal_trade::RevealTrade>,
-        intent: state::TradeIntentData,
+        ctx: Context<RevealTrade>,
+        intent: TradeIntentData,
         expected_hash: [u8; 32],
     ) -> Result<()> {
-        reveal_trade::handle(ctx, intent, expected_hash)
+        handle_reveal(ctx, intent, expected_hash)
     }
 
-    pub fn settle_trade(ctx: Context<settle_trade::SettleTrade>) -> Result<()> {
-        settle_trade::handle(ctx)
+    pub fn settle_trade(ctx: Context<SettleTrade>) -> Result<()> {
+        handle_settle(ctx)
     }
 }

@@ -1,12 +1,16 @@
 use anchor_lang::prelude::*;
 use crate::state::SwapIntent;
 
-
-#[anchor_lang::instruction(nonce)]
-
 #[derive(Accounts)]
+#[instruction(nonce: u64)] // Ensures `nonce` is available for the seeds expression
 pub struct CommitTrade<'info> {
-    #[account(init, payer = user, space = 8 + SwapIntent::SIZE, seeds = [b"intent", user.key().as_ref(), &nonce.to_le_bytes()], bump)]
+    #[account(
+        init,
+        payer = user,
+        space = 8 + SwapIntent::SIZE,
+        seeds = [b"intent", user.key().as_ref(), &nonce.to_le_bytes()],
+        bump
+    )]
     pub swap_intent: Account<'info, SwapIntent>,
 
     #[account(mut)]

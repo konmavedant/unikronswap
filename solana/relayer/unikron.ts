@@ -1,6 +1,3 @@
-// Relayer flow for UNIKRON
-// This script signs swap data, commits the intent hash, and later reveals the data
-
 import { Keypair, PublicKey, Connection, Transaction, SystemProgram, VersionedTransaction } from "@solana/web3.js";
 import { Program, AnchorProvider, BN, Idl, Wallet } from "@coral-xyz/anchor";
 import NodeWallet from "@coral-xyz/anchor/dist/cjs/nodewallet";
@@ -8,7 +5,7 @@ import { createHash } from "crypto";
 import idlJson from "./idl/unikron.json";
 
 // Replace with your deployed Program ID
-const programId = new PublicKey("Ez6G6H5KVD8AqUPNiVcqE8Z4yiG5Dr9oF8j4qyM93UU6");
+const programId = new PublicKey("7saCDPbxRTGEPeyTYZgXyzNVr5LXFPEnYKpVyAqT2QNd");
 const connection = new Connection("https://api.devnet.solana.com", "confirmed");
 
 const wallet = Keypair.generate();

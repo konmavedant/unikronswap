@@ -1,12 +1,8 @@
-// Migrations are an early feature. Currently, they're nothing more than this
-// single deploy script that's invoked from the CLI, injecting a provider
-// configured from the workspace's Anchor.toml.
-
 import * as anchor from "@coral-xyz/anchor";
 
 module.exports = async function (provider: anchor.AnchorProvider) {
-  // Configure client to use the provider.
   anchor.setProvider(provider);
+  const program = anchor.workspace.Unikron as anchor.Program<any>;
 
-  // Add your deploy script here.
+  console.log("Deploy script executed. Program ID:", program.programId.toBase58());
 };
