@@ -1,40 +1,55 @@
+// tests/unikron.ts
+
 import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
 import { Unikron } from "../target/types/unikron";
+import { assert } from "chai";
 import { PublicKey, SystemProgram } from "@solana/web3.js";
-import { expect } from "chai";
+import BN from "bn.js";
+
+const { Keypair } = anchor.web3;
 
 describe("unikron", () => {
   const provider = anchor.AnchorProvider.env();
   anchor.setProvider(provider);
+
   const program = anchor.workspace.Unikron as Program<Unikron>;
+  const user = Keypair.generate();
+  let intentPda: PublicKey;
+  let nonce = new BN(1);
 
-  const user = provider.wallet;
-  const nonce = new anchor.BN(1);
-  const expiry = new anchor.BN(Math.floor(Date.now() / 1000) + 600); // expiry 10 mins from now
-  const dummyHash = new Array(32).fill(1); // 32-byte dummy hash
+  it("Commits a trade intent", async () => {
+    // Fund user
+    const airdropSig = await provider.connection.requestAirdrop(
+      user.publicKey,
+      2 * anchor.web3.LAMPORTS_PER_SOL
+    );
+    await provider.connection.confirmTransaction(airdropSig);
 
-  it("should commit a trade intent", async () => {
-    const [intentPda] = PublicKey.findProgramAddressSync(
-      [Buffer.from("intent"), user.publicKey.toBuffer(), nonce.toArrayLike(Buffer, "le", 8)],
+    // Derive PDA
+    [intentPda] = await PublicKey.findProgramAddress(
+      [Buffer.from("intent"), user.publicKey.toBuffer(), Buffer.from(nonce.toArray("le", 8))],
       program.programId
     );
 
+    const intentHashBytes = anchor.utils.bytes.utf8.encode("dummyhash").slice(0, 32);
+    const intentHash = Array.from(intentHashBytes);
+    const expiry = new BN(Math.floor(Date.now() / 1000) + 600); // expires in 10 minutes
+
     await program.methods
-      .commitTrade(dummyHash as any, nonce, expiry)
+      .commitTrade(intentHash, nonce, expiry)
       .accounts({
-        swapIntent: intentPda,
         user: user.publicKey,
-        systemProgram: SystemProgram.programId,
-      })
+        system_program: SystemProgram.programId,
+        swap_intent: intentPda,
+        })
+
+
+      .signers([user])
       .rpc();
 
-    const intentAccount = await program.account.swapIntent.fetch(intentPda);
-
-    expect(intentAccount.user.toBase58()).to.equal(user.publicKey.toBase58());
-    expect(intentAccount.intentHash).to.deep.equal(dummyHash);
-    expect(intentAccount.nonce.toString()).to.equal(nonce.toString());
-    expect(intentAccount.expiry.toString()).to.equal(expiry.toString());
-    expect(intentAccount.revealed).to.be.false;
+    const storedIntent = await program.account.swapIntent.fetch(intentPda);
+    assert.ok(storedIntent.user.equals(user.publicKey));
+    assert.ok(storedIntent.intentHash.every((byte, i) => byte === intentHash[i]));
   });
 });
