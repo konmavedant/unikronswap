@@ -1,0 +1,1 @@
+pub const FEE_BASIS_POINTS: u16 = 1000; // 10.00% max fee
