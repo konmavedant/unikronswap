@@ -1,0 +1,367 @@
+{
+  "address": "7saCDPbxRTGEPeyTYZgXyzNVr5LXFPEnYKpVyAqT2QNd",
+  "metadata": {
+    "name": "unikron",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "commit_trade",
+      "discriminator": [
+        225,
+        172,
+        49,
+        43,
+        30,
+        198,
+        216,
+        89
+      ],
+      "accounts": [
+        {
+          "name": "swap_intent",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  105,
+                  110,
+                  116,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              },
+              {
+                "kind": "arg",
+                "path": "nonce"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "intent_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "nonce",
+          "type": "u64"
+        },
+        {
+          "name": "expiry",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "reveal_trade",
+      "discriminator": [
+        72,
+        86,
+        206,
+        182,
+        223,
+        187,
+        228,
+        226
+      ],
+      "accounts": [
+        {
+          "name": "swap_intent",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  105,
+                  110,
+                  116,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "swap_intent.user",
+                "account": "SwapIntent"
+              },
+              {
+                "kind": "account",
+                "path": "swap_intent.nonce",
+                "account": "SwapIntent"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "intent",
+          "type": {
+            "defined": {
+              "name": "TradeIntentData"
+            }
+          }
+        },
+        {
+          "name": "expected_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "settle_trade",
+      "discriminator": [
+        252,
+        176,
+        98,
+        248,
+        73,
+        123,
+        8,
+        157
+      ],
+      "accounts": [
+        {
+          "name": "fee_pools",
+          "writable": true
+        },
+        {
+          "name": "config",
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Config",
+      "discriminator": [
+        155,
+        12,
+        170,
+        224,
+        30,
+        250,
+        204,
+        130
+      ]
+    },
+    {
+      "name": "FeePools",
+      "discriminator": [
+        2,
+        11,
+        62,
+        208,
+        119,
+        240,
+        151,
+        126
+      ]
+    },
+    {
+      "name": "SwapIntent",
+      "discriminator": [
+        242,
+        212,
+        249,
+        216,
+        109,
+        94,
+        238,
+        134
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "AlreadyRevealed",
+      "msg": "Intent already revealed"
+    },
+    {
+      "code": 6001,
+      "name": "IntentExpired",
+      "msg": "Trade intent expired"
+    },
+    {
+      "code": 6002,
+      "name": "NonceMismatch",
+      "msg": "Nonce does not match"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidSignature",
+      "msg": "Signature verification failed"
+    },
+    {
+      "code": 6004,
+      "name": "HashMismatch",
+      "msg": "Hash mismatch between reveal and commit"
+    }
+  ],
+  "types": [
+    {
+      "name": "Config",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "fee_bps",
+            "type": "u16"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "FeePools",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "treasury",
+            "type": "pubkey"
+          },
+          {
+            "name": "stakers",
+            "type": "pubkey"
+          },
+          {
+            "name": "bounty",
+            "type": "pubkey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SwapIntent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "intent_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "nonce",
+            "type": "u64"
+          },
+          {
+            "name": "expiry",
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "revealed",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TradeIntentData",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "nonce",
+            "type": "u64"
+          },
+          {
+            "name": "expiry",
+            "type": "u64"
+          },
+          {
+            "name": "relayer",
+            "type": "pubkey"
+          },
+          {
+            "name": "relayer_fee",
+            "type": "u64"
+          },
+          {
+            "name": "token_in",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_out",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount_in",
+            "type": "u64"
+          },
+          {
+            "name": "min_out",
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ]
+}

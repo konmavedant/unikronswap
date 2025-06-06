@@ -1,0 +1,19 @@
+[features]
+resolution = true
+skip-lint = false
+
+[programs.devnet]
+solana = "7saCDPbxRTGEPeyTYZgXyzNVr5LXFPEnYKpVyAqT2QNd"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "devnet"
+wallet = "~/.config/solana/devnet.json"
+
+[scripts]
+test = "mocha -r ts-node/register -t 1000000 tests/**/*.ts"
+
+[test]
+script = "mocha -r ts-node/register -t 1000000 tests/**/*.ts"
