@@ -1,12 +1,14 @@
+use anchor_lang::prelude::*;
+
 pub mod constants;
 pub mod errors;
 pub mod instructions;
 pub mod state;
 
-use anchor_lang::prelude::*;
 use instructions::commit_trade::{CommitTrade, handle_commit};
 use instructions::reveal_trade::{RevealTrade, handle_reveal};
 use instructions::settle_trade::{SettleFee, handler as handle_settle};
+
 use state::TradeIntentData;
 
 declare_id!("7saCDPbxRTGEPeyTYZgXyzNVr5LXFPEnYKpVyAqT2QNd");
