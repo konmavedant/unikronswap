@@ -41,15 +41,13 @@ describe("unikron", () => {
       .accounts({
         user: user.publicKey,
         system_program: SystemProgram.programId,
-        swap_intent: intentPda,
-        })
-
-
+        swapIntent: intentPda,
+      })
       .signers([user])
       .rpc();
 
     const storedIntent = await program.account.swapIntent.fetch(intentPda);
     assert.ok(storedIntent.user.equals(user.publicKey));
-    assert.ok(storedIntent.intentHash.every((byte, i) => byte === intentHash[i]));
+    assert.ok(storedIntent.intentHash.every((byte: any, i: any) => byte === intentHash[i]));
   });
 });
