@@ -1,5 +1,7 @@
 use anchor_lang::prelude::*;
 
+declare_id!("7saCDPbxRTGEPeyTYZgXyzNVr5LXFPEnYKpVyAqT2QNd");
+
 pub mod constants;
 pub mod errors;
 pub mod instructions;
@@ -10,8 +12,6 @@ use instructions::reveal_trade::{RevealTrade, handle_reveal};
 use instructions::settle_trade::{SettleFee, handler as handle_settle};
 
 use state::TradeIntentData;
-
-declare_id!("7saCDPbxRTGEPeyTYZgXyzNVr5LXFPEnYKpVyAqT2QNd");
 
 #[program]
 pub mod unikron {
